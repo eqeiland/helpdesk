@@ -16,3 +16,38 @@ defmodule Helpdesk.Support.Ticket do
     attribute :subject, :string
   end
 end
+
+attributes do
+  ...
+  attribute :subject, :string do
+    # Don't allow `nil` values
+    allow_nil? false
+  end
+
+  # status is either `open` or `closed`. We can add more statuses later
+  attribute :status, :atom do
+    # Constraints allow you to provide extra rules for the value.
+    # The available constraints depend on the type
+    # See the documentation for each type to know what constraints are available
+    # Since atoms are generally only used when we know all of the values
+    # it provides a `one_of` constraint, that only allows those values
+    constraints [one_of: [:open, :closed]]
+
+    # The status defaulting to open makes sense
+    default :open
+
+    # We also don't want status to ever be `nil`
+    allow_nil? false
+  end
+end
+
+# lib/helpdesk/support/resources/ticket.ex
+
+actions do
+  ...
+  create :open do
+    # By default you can provide all public attributes to an action
+    # This action should only accept the subject
+    accept [:subject]
+  end
+end
